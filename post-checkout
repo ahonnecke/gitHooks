@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Fix the .htaccess
+
+git update-index --assume-unchanged /Users/ahonnecke/Code/havenly-2.0/.htaccess
+grep -v Cond /Users/ahonnecke/Code/havenly-2.0/.htaccess | grep -v https > /tmp/tmp_htaccess
+mv /tmp/tmp_htaccess /Users/ahonnecke/Code/havenly-2.0/.htaccess
+
+PREV_COMMIT=$1
+POST_COMMIT=$2
+
+NOCOLOR='\e[0m'
+REDCOLOR='\e[37;41m'
+
+if [[ -f composer.lock ]]; then
+    DIFF=`git diff --shortstat $PREV_COMMIT..$POST_COMMIT composer.lock`
+    if [[ $DIFF != "" ]]; then
+        echo -e "$REDCOLOR composer.lock has changed. You must run composer install$NOCOLOR"
+    fi
+fi
+
+#git update-index --assume-unchanged /Users/ahonnecke/Code/havenly-2.0/Vendor/composer/ClassLoader.php
+#git update-index --assume-unchanged /Users/ahonnecke/Code/havenly-2.0/Vendor/composer/autoload_files.php
+#git update-index --assume-unchanged /Users/ahonnecke/Code/havenly-2.0/Vendor/composer/autoload_real.php
+#git update-index --assume-unchanged /Users/ahonnecke/Code/havenly-2.0/Vendor/composer/include_paths.php
+#git update-index --assume-unchanged /Users/ahonnecke/Code/havenly-2.0/Vendor/composer/installed.json
